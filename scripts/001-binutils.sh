@@ -56,13 +56,14 @@ PROC_NR=$(getconf _NPROCESSORS_ONLN)
 ## For each target...
 for TARGET in "dvp"; do
   ## Create and enter the toolchain/build directory
-  rm -rf "build-$TARGET"
-  mkdir "build-$TARGET"
+  mkdir -p "build-$TARGET"
   cd "build-$TARGET"
 
   ## Configure the build.
   ../configure \
     --quiet \
+    --no-recursion \
+    --cache-file=build.cache \
     --prefix="$PS2DEV/$TARGET_ALIAS" \
     --target="$TARGET" \
     --disable-nls \
@@ -72,7 +73,6 @@ for TARGET in "dvp"; do
   ## Compile and install.
   make --quiet -j "$PROC_NR" CFLAGS="$CFLAGS -Wno-implicit-function-declaration"
   make --quiet -j "$PROC_NR" install
-  make --quiet -j "$PROC_NR" clean
 
   ## Exit the build directory.
   cd ..
